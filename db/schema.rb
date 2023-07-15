@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_15_084205) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_15_120132) do
   create_table "analyses", force: :cascade do |t|
     t.string "title"
     t.string "description"
@@ -18,6 +18,22 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_15_084205) do
     t.string "image"
     t.string "photo_credit"
     t.boolean "is_hot_news", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "analyses_players", id: false, force: :cascade do |t|
+    t.integer "analysis_id", null: false
+    t.integer "player_id", null: false
+    t.index ["analysis_id"], name: "index_analyses_players_on_analysis_id"
+    t.index ["player_id"], name: "index_analyses_players_on_player_id"
+  end
+
+  create_table "players", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.string "position"
+    t.string "rotowire_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

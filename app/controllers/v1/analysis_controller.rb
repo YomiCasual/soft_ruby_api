@@ -4,7 +4,7 @@ class V1::AnalysisController < ApplicationController
 
     def index
         @analysis = Analysis.all
-        api_response(data: sanitized_array_analysis(@analysis) , message: "Successfully fetched analysis" )
+        api_response(data: AnalysisRepresenter.new(@analysis).as_json , message: "Successfully fetched analysis" )
     end
 
     def show
@@ -14,7 +14,7 @@ class V1::AnalysisController < ApplicationController
 
     def update
         begin
-            @analysis.update!(analysis_params)
+            @analysis.update!(update_params)
             @analysis = Analysis.find(params[:id])
             return api_response(data: AnalysisRepresenter.new(@analysis).as_json , message: "Successfully updated analysis" )
         rescue => exception
@@ -24,7 +24,6 @@ class V1::AnalysisController < ApplicationController
 
     def destroy
         begin
-            @analysis = Analysis.find( params[:id])
             @analysis.destroy
             return api_response( message: "Analysis deleted successfully" )
         rescue => exception
@@ -46,11 +45,6 @@ class V1::AnalysisController < ApplicationController
 
 
     private
-    def sanitized_array_analysis(analysis)
-        analysis.map {
-            |data| AnalysisRepresenter.new(data).as_json
-        }
-    end
 
     def get_analysis 
         begin
@@ -65,6 +59,10 @@ class V1::AnalysisController < ApplicationController
     end
 
     def analysis_params
-        params.require(:analysis).permit(:title, :is_hot_news, :description, :long_description)
+        # params.require(:analysis).permit( :player_ids => [])
+        params.require(:analysis).permit(:title, :is_hot_news, :description, :long_description, :player_ids => [])
+    end
+    def update_params
+        params.permit(:title, player_ids: [])
     end
 end
